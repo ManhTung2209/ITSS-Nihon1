@@ -11,7 +11,6 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Data
 @Table(name = "\"Cafe\"")
 public class Cafe {
 
@@ -46,4 +45,36 @@ public class Cafe {
 
     @Column(name = "\"cafeStatus\"")
     private String cafeStatus;
+
+    public Integer getCafeID() {
+        return cafeID;
+    }
+
+    public void setCafeID(Integer cafeID) {
+        this.cafeID = cafeID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public BigDecimal getRating() {
+        return rating;
+    }
+
+    public void setRating(BigDecimal rating) {
+        this.rating = rating;
+    }
 }

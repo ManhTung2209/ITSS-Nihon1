@@ -2,10 +2,12 @@ package com.cafefinder.cafefinderbackend.service;
 
 import com.cafefinder.cafefinderbackend.model.Cafe;
 import com.cafefinder.cafefinderbackend.repository.CafeRepository;
+import dto.CafeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,9 +16,34 @@ public class CafeService {
     @Autowired
     private CafeRepository cafeRepository;
 
-    public Page<Cafe> searchCafeByName(String name, int page, int size) {
+    public ResponseEntity<Page<CafeDTO>> searchCafeByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return cafeRepository.findByNameContainingIgnoreCase(name, pageable);
+        Page<Cafe> cafes = cafeRepository.findByNameContainingIgnoreCase(name, pageable);
+        Page<CafeDTO> cafeDTOs = cafes.map(c -> {
+            CafeDTO dto = new CafeDTO();
+            dto.setCafeID(c.getCafeID());
+            dto.setName(c.getName());
+            dto.setAddress(c.getAddress());
+            dto.setRating(c.getRating());
+
+            return dto;
+        });
+        return ResponseEntity.ok(cafeDTOs);
+    }
+
+    public ResponseEntity<Page<CafeDTO>> getAllCafe( int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Cafe> cafes = cafeRepository.findAll(pageable);
+        Page<CafeDTO> cafeDTOs = cafes.map(c -> {
+            CafeDTO dto = new CafeDTO();
+            dto.setCafeID(c.getCafeID());
+            dto.setName(c.getName());
+            dto.setAddress(c.getAddress());
+            dto.setRating(c.getRating());
+
+            return dto;
+        });
+        return ResponseEntity.ok(cafeDTOs);
     }
 
 

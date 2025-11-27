@@ -11,4 +11,6 @@ public interface CafeRepository extends JpaRepository<Cafe, Integer> {
 
     Page<Cafe> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
+    Page<Cafe> findAll(Pageable pageable);
+
 }
