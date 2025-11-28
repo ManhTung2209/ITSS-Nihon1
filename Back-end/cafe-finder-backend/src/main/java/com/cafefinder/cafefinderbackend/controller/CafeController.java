@@ -1,15 +1,10 @@
 package com.cafefinder.cafefinderbackend.controller;
 
-import com.cafefinder.cafefinderbackend.model.Cafe;
 import com.cafefinder.cafefinderbackend.service.CafeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
+import dto.CafeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,11 +15,20 @@ public class CafeController {
     private CafeService cafeService;
 
     @GetMapping("/search")
-    public Page<Cafe> searchCafe(
-            @RequestParam(defaultValue = "") String name,
+    public ResponseEntity<Page<CafeDTO>> searchCafe(
+            @RequestParam(defaultValue = "", required = false) String keyword,
+            @RequestParam(required = false) Double minRating,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {
-        return cafeService.searchCafeByName(name, page, size);
+        return cafeService.searchCafesByKeywordAndRating(keyword, minRating, page, size);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<CafeDTO>> getALLCafe(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        return cafeService.getAllCafe(page, size);
     }
 }
