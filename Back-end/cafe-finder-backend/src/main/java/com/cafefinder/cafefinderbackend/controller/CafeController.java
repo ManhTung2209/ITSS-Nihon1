@@ -16,7 +16,7 @@ public class CafeController {
 
     @GetMapping("/search")
     public ResponseEntity<Page<CafeDTO>> searchCafe(
-            @RequestParam(defaultValue = "", required = false) String keyword,
+            @RequestParam(required = false, defaultValue = "") String keyword,
             @RequestParam(required = false) Double minRating,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
@@ -25,7 +25,7 @@ public class CafeController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<CafeDTO>> getALLCafe(
+    public ResponseEntity<Page<CafeDTO>> getAllCafe(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {

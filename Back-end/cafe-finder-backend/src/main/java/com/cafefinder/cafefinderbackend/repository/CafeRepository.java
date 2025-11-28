@@ -14,10 +14,10 @@ public interface CafeRepository extends JpaRepository<Cafe, Integer> {
     Page<Cafe> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
     Page<Cafe> findByNameContainingIgnoreCaseAndRatingGreaterThanEqual(
-        String name, 
-        BigDecimal minRating,
-        Pageable pageable
+            String name,
+            BigDecimal minRating,
+            Pageable pageable
     );
-    
-    Page<Cafe> findAll(Pageable pageable);
+
+    Page<Cafe> findByRatingGreaterThanEqual(BigDecimal rating, Pageable pageable);
 }

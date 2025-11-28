@@ -19,49 +19,56 @@ public class CafeService {
     private CafeRepository cafeRepository;
 
     public ResponseEntity<Page<CafeDTO>> searchCafesByKeywordAndRating(
-        String keyword, 
-        Double minRating, 
-        int page, 
-        int size) {
-        
+            String keyword,
+            Double minRating,
+            int page,
+            int size) {
+
+        if (keyword == null) keyword = "";
+        keyword = keyword.trim();
+
         Pageable pageable = PageRequest.of(page, size);
         Page<Cafe> cafes;
-        
-        BigDecimal minRatingBd = (minRating != null) ? BigDecimal.valueOf(minRating) : null;
 
-        if (minRatingBd != null) {
-            cafes = cafeRepository.findByNameContainingIgnoreCaseAndRatingGreaterThanEqual(
-                keyword, 
-                minRatingBd, 
-                pageable
-            );
-        } else {
-            cafes = cafeRepository.findByNameContainingIgnoreCase(keyword, pageable);
+        BigDecimal minRatingBd = (minRating != null)
+                ? BigDecimal.valueOf(minRating)
+                : null;
+
+        if (!keyword.isEmpty() && minRatingBd != null) {
+            cafes = cafeRepository
+                    .findByNameContainingIgnoreCaseAndRatingGreaterThanEqual(
+                            keyword, minRatingBd, pageable);
+        }
+        else if (!keyword.isEmpty()) {
+            cafes = cafeRepository
+                    .findByNameContainingIgnoreCase(keyword, pageable);
+        }
+        else if (minRatingBd != null) {
+            cafes = cafeRepository
+                    .findByRatingGreaterThanEqual(minRatingBd, pageable);
+        }
+        else {
+            cafes = cafeRepository.findAll(pageable);
         }
 
-        Page<CafeDTO> cafeDTOs = cafes.map(c -> {
-            CafeDTO dto = new CafeDTO();
-            dto.setCafeID(c.getCafeID());
-            dto.setName(c.getName());
-            dto.setAddress(c.getAddress());
-            dto.setRating(c.getRating());
-            return dto;
-        });
+        Page<CafeDTO> cafeDTOs = cafes.map(this::toDTO);
 
         return ResponseEntity.ok(cafeDTOs);
     }
 
-    public ResponseEntity<Page<CafeDTO>> getAllCafe( int page, int size) {
+    public ResponseEntity<Page<CafeDTO>> getAllCafe(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Cafe> cafes = cafeRepository.findAll(pageable);
-        Page<CafeDTO> cafeDTOs = cafes.map(c -> {
-            CafeDTO dto = new CafeDTO();
-            dto.setCafeID(c.getCafeID());
-            dto.setName(c.getName());
-            dto.setAddress(c.getAddress());
-            dto.setRating(c.getRating());
-            return dto;
-        });
-        return ResponseEntity.ok(cafeDTOs);
+        Page<CafeDTO> dtos = cafes.map(this::toDTO);
+        return ResponseEntity.ok(dtos);
+    }
+
+    private CafeDTO toDTO(Cafe c) {
+        CafeDTO dto = new CafeDTO();
+        dto.setCafeID(c.getCafeID());
+        dto.setName(c.getName());
+        dto.setAddress(c.getAddress());
+        dto.setRating(c.getRating());
+        return dto;
     }
 }
