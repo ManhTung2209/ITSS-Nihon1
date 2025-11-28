@@ -25,13 +25,14 @@ public class CafeService {
             dto.setName(c.getName());
             dto.setAddress(c.getAddress());
             dto.setRating(c.getRating());
-
+            dto.setDescription(c.getDescription());
+            dto.setImage(c.getImage());
             return dto;
         });
         return ResponseEntity.ok(cafeDTOs);
     }
 
-    public ResponseEntity<Page<CafeDTO>> getAllCafe( int page, int size) {
+    public ResponseEntity<Page<CafeDTO>> getAllCafe(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Cafe> cafes = cafeRepository.findAll(pageable);
         Page<CafeDTO> cafeDTOs = cafes.map(c -> {
@@ -40,12 +41,12 @@ public class CafeService {
             dto.setName(c.getName());
             dto.setAddress(c.getAddress());
             dto.setRating(c.getRating());
-
+            dto.setDescription(c.getDescription());
+            dto.setImage(c.getImage());
             return dto;
         });
         return ResponseEntity.ok(cafeDTOs);
     }
-
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         final int R = 6371;
