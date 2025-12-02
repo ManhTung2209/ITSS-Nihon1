@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コーヒーファインダー - ホーム</title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script th:src="@{/js/main.js}" defer></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <a th:href="@{/}">☕ コーヒーファインダー</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a th:href="@{/}" class="active">ホーム</a></li>
+                <li><a th:href="@{/map}">地図</a></li>
+                <li class="dropdown">
+                    <a th:href="@{/settings}" class="dropdown-toggle">自分 ▾</a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/settings}">👤 アカウント</a></li>
+                        <li><a href="#" onclick="handleLogout(); return false;">🚪 ログアウト</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <h1>あなたの理想のカフェを見つけよう</h1>
+            <p>近くの最高のコーヒーショップを探索</p>
+
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="カフェ名、評価、距離で検索...">
+                <button onclick="searchCoffeeShops()">🔍 検索</button>
+            </div>
+
+            <div class="filter-options">
+                <select id="filterRating">
+                    <option value="">評価でフィルター</option>
+                    <option value="5">⭐⭐⭐⭐⭐ 5つ星</option>
+                    <option value="4">⭐⭐⭐⭐ 4つ星以上</option>
+                    <option value="3">⭐⭐⭐ 3つ星以上</option>
+                </select>
+
+                <select id="filterDistance">
+                    <option value="">距離でフィルター</option>
+                    <option value="1">1km以内</option>
+                    <option value="3">3km以内</option>
+                    <option value="5">5km以内</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="featured-section">
+            <h2>🌟 注目のカフェ</h2>
+            <div id="featuredShops" class="shop-grid"></div>
+        </section>
+
+        <section class="nearby-section">
+            <h2>📍 近くのカフェ</h2>
+            <div id="nearbyShops" class="shop-grid"></div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 コーヒーファインダー. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            displayFeaturedShops();
+            displayNearbyShops();
+        });
+    </script>
+</body>
+</html>

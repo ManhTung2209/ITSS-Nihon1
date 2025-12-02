@@ -1,0 +1,967 @@
+/* リセット & ベーススタイル */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #6F4E37;
+    --secondary-color: #C7A17A;
+    --accent-color: #D4A574;
+    --text-dark: #2C2416;
+    --text-light: #6B5B4D;
+    --bg-light: #FAF8F5;
+    --bg-white: #FFFFFF;
+    --border-color: #E5DDD5;
+    --success-color: #4CAF50;
+    --error-color: #E53935;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+body {
+    font-family: 'Segoe UI', 'Yu Gothic', 'Hiragino Sans', sans-serif;
+    color: var(--text-dark);
+    background-color: var(--bg-light);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ナビゲーション */
+.navbar {
+    background-color: var(--bg-white);
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 20px;
+}
+
+.nav-brand a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-menu a {
+    color: var(--text-dark);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+    background-color: var(--secondary-color);
+    color: var(--bg-white);
+}
+
+/* Dropdown Menu */
+.nav-menu .dropdown {
+    position: relative;
+}
+
+.nav-menu .dropdown-toggle {
+    cursor: pointer;
+    user-select: none;
+}
+
+.nav-menu .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--bg-white);
+    box-shadow: var(--shadow-lg);
+    border-radius: 4px;
+    min-width: 180px;
+    list-style: none;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    z-index: 1001;
+}
+
+.nav-menu .dropdown:hover .dropdown-menu {
+    display: block;
+    animation: fadeInDown 0.3s ease;
+}
+
+.nav-menu .dropdown-menu li {
+    padding: 0;
+}
+
+.nav-menu .dropdown-menu a {
+    display: block;
+    padding: 0.75rem 1.25rem;
+    color: var(--text-dark);
+    border-radius: 0;
+    transition: background-color 0.2s;
+}
+
+.nav-menu .dropdown-menu a:hover {
+    background-color: var(--bg-light);
+    color: var(--primary-color);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ヒーローセクション */
+.hero {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+/* 検索ボックス */
+.search-box {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    box-shadow: var(--shadow-lg);
+}
+
+.search-box input {
+    flex: 1;
+    padding: 1rem;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    font-size: 1rem;
+}
+
+.search-box button {
+    padding: 1rem 2rem;
+    background-color: var(--accent-color);
+    border: none;
+    border-radius: 0 4px 4px 0;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-box button:hover {
+    background-color: var(--primary-color);
+}
+
+/* フィルターオプション */
+.filter-options {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.filter-options select {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid white;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* カフェグリッド */
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.shop-card {
+    background-color: var(--bg-white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.shop-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.shop-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    object-position: center; 
+}
+
+.shop-info {
+    padding: 1.5rem;
+}
+
+.shop-name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.shop-rating {
+    color: #FFA500;
+    margin-bottom: 0.5rem;
+}
+
+.shop-address {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.shop-distance {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* セクション */
+.featured-section,
+.nearby-section {
+    margin: 3rem 0;
+}
+
+.featured-section h2,
+.nearby-section h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+/* 認証ページ */
+.auth-container {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.auth-box {
+    background-color: var(--bg-white);
+    padding: 3rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    max-width: 450px;
+    width: 100%;
+}
+
+.auth-box h1 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.forgot-password-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.5rem;
+    box-shadow: 0 4px 12px rgba(111, 78, 55, 0.3);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.form-group label i {
+    margin-right: 0.5rem;
+    color: var(--primary-color);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="tel"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    cursor: pointer;
+}
+
+.form-group-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.forgot-password-link {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: color 0.3s;
+    white-space: nowrap;
+}
+
+.forgot-password-link:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+.helper-text {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+}
+
+.error-message {
+    display: block;
+    color: var(--error-color);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.success-message {
+    display: block;
+    color: var(--success-color);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+}
+
+.btn-secondary {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--text-light);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 1rem;
+}
+
+.btn-secondary:hover {
+    background-color: var(--text-dark);
+}
+
+.btn-danger {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--error-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-danger:hover {
+    background-color: #C62828;
+}
+
+.auth-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+/* 詳細ページ */
+.detail-page {
+    padding: 2rem 0;
+}
+
+.back-link {
+    margin-bottom: 2rem;
+}
+
+.back-link a {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.shop-detail {
+    background-color: var(--bg-white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.detail-header {
+    position: relative;
+}
+
+.detail-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.detail-content {
+    padding: 2rem;
+}
+
+.detail-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.detail-title {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 0;
+}
+
+.detail-rating {
+    font-size: 1.5rem;
+    color: #FFA500;
+    margin-bottom: 1rem;
+}
+
+.map-button-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.3s;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.map-button-inline:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.detail-info {
+    margin: 2rem 0;
+}
+
+.detail-info h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.detail-info p {
+    color: var(--text-dark);
+    line-height: 1.8;
+}
+
+.menu-section {
+    margin: 2rem 0;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.menu-item {
+    background-color: var(--bg-light);
+    padding: 1rem;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.menu-item-name {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.menu-item-price {
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.reviews-section {
+    margin: 2rem 0;
+}
+
+.review-card {
+    background-color: var(--bg-light);
+    padding: 1.5rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.review-author {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.review-rating {
+    color: #FFA500;
+    margin-bottom: 0.5rem;
+}
+
+.review-text {
+    color: var(--text-dark);
+}
+
+.review-report-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: transparent;
+    border: 2px solid #E53935;
+    color: #E53935;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.review-report-btn:hover {
+    background-color: #E53935;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* レビュー投稿フォーム */
+.review-form-container {
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: var(--bg-light);
+    border-radius: 8px;
+    border: 2px dashed var(--border-color);
+}
+
+.review-form-container h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}
+
+.review-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.review-form label {
+    display: block;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.review-form .required {
+    color: var(--error-color);
+}
+
+.review-form input[type="text"],
+.review-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.3s;
+}
+
+.review-form input[type="text"]:focus,
+.review-form textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.review-form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.review-form small {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--text-light);
+    font-size: 0.875rem;
+}
+
+.review-form .char-count {
+    text-align: right;
+}
+
+/* 星評価 */
+.star-rating {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.star-rating .star {
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #DDD;
+}
+
+.star-rating .star:hover {
+    transform: scale(1.2);
+}
+
+.rating-text {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* 投稿ボタン */
+.submit-review-btn {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.submit-review-btn:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.submit-review-btn:active {
+    transform: translateY(0);
+}
+
+.submit-review-btn i {
+    font-size: 1rem;
+}
+
+.map-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-top: 2rem;
+    transition: background-color 0.3s;
+}
+
+.map-button:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* 地図ページ */
+.map-container {
+    display: flex;
+    height: calc(100vh - 140px);
+}
+
+.map-sidebar {
+    width: 350px;
+    background-color: var(--bg-white);
+    overflow-y: auto;
+    padding: 1.5rem;
+    border-right: 1px solid var(--border-color);
+}
+
+.map-sidebar h2 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.shop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.shop-list-item {
+    background-color: var(--bg-light);
+    padding: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.shop-list-item:hover {
+    background-color: var(--border-color);
+}
+
+.map {
+    flex: 1;
+    z-index: 1;
+}
+
+/* 設定ページ */
+.settings-page {
+    padding: 2rem 0;
+}
+
+.settings-page h1 {
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+}
+
+.settings-container {
+    max-width: 800px;
+}
+
+.settings-section {
+    background-color: var(--bg-white);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+}
+
+.settings-section h2 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+.danger-zone {
+    border: 2px solid var(--error-color);
+}
+
+/* フッター */
+.footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+    margin-top: 4rem;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+    .nav-menu {
+        gap: 1rem;
+    }
+
+    .nav-menu a {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    .search-box input,
+    .search-box button {
+        border-radius: 4px;
+    }
+
+    .filter-options {
+        flex-direction: column;
+    }
+
+    .shop-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-title {
+        font-size: 2rem;
+    }
+
+    .map-button-inline {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .map-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .map-sidebar {
+        width: 100%;
+        max-height: 300px;
+    }
+
+    .map {
+        height: 400px;
+    }
+
+    .auth-box {
+        padding: 2rem;
+    }
+}
+
+.search-notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background-color: var(--success-color);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    animation: slideInRight 0.3s ease-out;
+    font-weight: 500;
+}
+
+.search-notification.hide {
+    animation: slideOutRight 0.3s ease-out forwards;
+}
+
+.search-notification i {
+    font-size: 1.2rem;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
