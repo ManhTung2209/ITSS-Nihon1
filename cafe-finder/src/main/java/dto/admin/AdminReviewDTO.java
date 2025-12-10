@@ -1,4 +1,4 @@
-package com.itss.cafe_finder.dto.admin;
+package dto.admin;
 
 import com.itss.cafe_finder.model.enums.ReviewStatusType;
 import lombok.Data;

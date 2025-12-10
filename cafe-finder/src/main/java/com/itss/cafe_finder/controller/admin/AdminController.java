@@ -1,9 +1,9 @@
 package com.itss.cafe_finder.controller.admin;
 
-import com.itss.cafe_finder.dto.admin.AdminCafeDTO;
-import com.itss.cafe_finder.dto.admin.AdminReviewDTO;
-import com.itss.cafe_finder.dto.admin.AdminUserDTO;
-import com.itss.cafe_finder.dto.admin.DashboardStatsDTO;
+import dto.admin.AdminCafeDTO;
+import dto.admin.AdminReviewDTO;
+import dto.admin.AdminUserDTO;
+import dto.admin.DashboardStatsDTO;
 import com.itss.cafe_finder.model.enums.CafeStatusType;
 import com.itss.cafe_finder.model.enums.ReviewStatusType;
 import com.itss.cafe_finder.model.enums.UserRoleType;

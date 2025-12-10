@@ -1,6 +1,6 @@
 package com.itss.cafe_finder.service.admin;
 
-import com.itss.cafe_finder.dto.admin.AdminUserDTO;
+import dto.admin.AdminUserDTO;
 import com.itss.cafe_finder.model.User;
 import com.itss.cafe_finder.model.enums.UserRoleType;
 import com.itss.cafe_finder.model.enums.UserStatusType;

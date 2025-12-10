@@ -2,7 +2,7 @@ package com.itss.cafe_finder.service;
 
 import com.itss.cafe_finder.model.Cafe;
 import com.itss.cafe_finder.repository.CafeRepository;
-import com.itss.cafe_finder.dto.CafeDTO;
+import dto.CafeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

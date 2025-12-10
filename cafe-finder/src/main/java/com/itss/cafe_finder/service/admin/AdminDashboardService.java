@@ -1,6 +1,6 @@
 package com.itss.cafe_finder.service.admin;
 
-import com.itss.cafe_finder.dto.admin.DashboardStatsDTO;
+import dto.admin.DashboardStatsDTO;
 import com.itss.cafe_finder.model.enums.ReviewStatusType;
 import com.itss.cafe_finder.repository.CafeRepository;
 import com.itss.cafe_finder.repository.ReviewRepository;

@@ -1,7 +1,7 @@
 package com.itss.cafe_finder.service.admin;
 
-import com.itss.cafe_finder.dto.admin.AdminCafeDTO;
-import com.itss.cafe_finder.dto.admin.DishDTO;
+import dto.admin.AdminCafeDTO;
+import dto.admin.DishDTO;
 import com.itss.cafe_finder.model.Cafe;
 import com.itss.cafe_finder.model.Dish;
 import com.itss.cafe_finder.model.enums.CafeStatusType;
