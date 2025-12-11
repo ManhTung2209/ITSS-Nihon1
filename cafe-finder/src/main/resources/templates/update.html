@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プロフィール更新 - コーヒーファインダー</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <a th:href="@{/}">☕ コーヒーファインダー</a>
+        </div>
+        <ul class="nav-menu">
+            <li><a th:href="@{/}">ホーム</a></li>
+            <li><a th:href="@{/map}">地図</a></li>
+            <li><a th:href="@{/settings}">設定</a></li>
+            <li><a th:href="@{/logout}">ログアウト</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main class="auth-container">
+    <div class="auth-box">
+        <h1>プロフィール更新</h1>
+        <p class="auth-subtitle">アカウント情報を変更する</p>
+
+        <!-- Hiển thị lỗi từ backend -->
+        <div th:if="${error}" class="error-message" style="color: red; margin-bottom: 15px; text-align: center;">
+            <p th:text="${error}"></p>
+        </div>
+
+        <!-- Form UPDATE -->
+        <form th:action="@{/update}" th:object="${userUpdateRequest}" method="post">
+            <input type="hidden" name="_method" value="put"/> <!-- Cho phép dùng PUT -->
+
+            <div class="form-group">
+                <label for="name">ユーザー名</label>
+                <input type="text" id="name" th:field="*{name}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">メールアドレス</label>
+                <input type="email" id="email" th:field="*{email}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">新しいパスワード (任意)</label>
+                <input type="password" id="password" th:field="*{password}">
+                <span class="helper-text">変更しない場合は空欄のままにしてください</span>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">パスワード確認</label>
+                <input type="password" id="confirmPassword" name="confirmPassword">
+                <span id="confirmPasswordError"></span>
+            </div>
+
+            <button type="submit" class="btn-primary">更新</button>
+        </form>
+
+        <div class="auth-footer">
+            <p><a th:href="@{/}">戻る</a></p>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2025 コーヒーファインダー. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        var pass = document.getElementById('password').value;
+        var confirm = document.getElementById('confirmPassword').value;
+
+        var errorSpan = document.getElementById('confirmPasswordError');
+        if(errorSpan) errorSpan.textContent = "";
+
+        // Nếu user nhập mật khẩu mới → phải xác nhận
+        if (pass.length > 0 || confirm.length > 0) {
+            if (pass !== confirm) {
+                e.preventDefault();
+                errorSpan.textContent = "確認用パスワードが一致しません！";
+                errorSpan.style.color = "red";
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

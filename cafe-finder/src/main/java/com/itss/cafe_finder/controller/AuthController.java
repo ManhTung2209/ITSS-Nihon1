@@ -1,13 +1,17 @@
 package com.itss.cafe_finder.controller;
 
-import com.itss.cafe_finder.model.User;
-import com.itss.cafe_finder.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
+import com.itss.cafe_finder.model.User;
+import com.itss.cafe_finder.service.impl.UserService;
+
+import dto.request.UserUpdateRequest;
 
 @Controller
 public class AuthController {
@@ -43,5 +47,17 @@ public class AuthController {
             model.addAttribute("error", "Đăng ký thất bại. Có thể email đã được sử dụng.");
             return "register";
         }
+    }
+
+    @GetMapping("/update")
+    public String showUpdateForm(Model model) {
+        model.addAttribute("userUpdateRequest", new UserUpdateRequest());
+        return "update"; // Trả về file update.html trong templates
+    }
+
+    @PutMapping("/update")
+    public String updateUser(@ModelAttribute("userUpdateRequest")UserUpdateRequest userUpdateRequest){
+        this.userService.updateUser(userUpdateRequest);
+        return "redirect:/login";
     }
 }

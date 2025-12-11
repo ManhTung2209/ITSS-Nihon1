@@ -19,7 +19,7 @@ public class SecurityConfig {
                 // Cho phép truy cập công khai các trang static, api tìm kiếm, và trang chủ
                 .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/api/cafes/**", "/register", "/login").permitAll()
                 // Các request khác yêu cầu đăng nhập
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .formLogin((form) -> form
                 .loginPage("/login") // Đường dẫn đến trang login tùy chỉnh
