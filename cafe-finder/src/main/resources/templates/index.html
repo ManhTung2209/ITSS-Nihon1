@@ -19,18 +19,26 @@
                 <a th:href="@{/}">☕ コーヒーファインダー</a>
             </div>
             <ul class="nav-menu">
-                <li><a th:href="@{/}" class="active">ホーム</a></li> <li><a th:href="@{/map}">地図</a></li> <li sec:authorize="!isAuthenticated()">
-                    <a th:href="@{/login}">ログイン</a> </li>
-                <li sec:authorize="!isAuthenticated()">
-                    <a th:href="@{/register}">新規登録</a> </li>
+                <li><a th:href="@{/}" class="active">ホーム</a></li>
+                <li><a th:href="@{/map}">地図</a></li>
+                
+                <!-- Login/Register buttons (show when not logged in) -->
+                <li th:if="!${isLoggedIn}">
+                    <a th:href="@{/login}">ログイン</a>
+                </li>
+                <li th:if="!${isLoggedIn}">
+                    <a th:href="@{/register}">新規登録</a>
+                </li>
 
-                <li class="dropdown" sec:authorize="isAuthenticated()">
+                <!-- User dropdown (show when logged in) -->
+                <li class="dropdown" th:if="${isLoggedIn}">
                     <a href="#" class="dropdown-toggle">
-                        <span sec:authentication="name">User</span> ▾
+                        <span th:text="${userName}">User</span> ▾
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a th:href="@{/settings}">👤 アカウント</a></li> <li>
-                            <form th:action="@{/logout}" method="post" id="logoutForm">
+                        <li><a th:href="@{/settings}">👤 アカウント</a></li>
+                        <li>
+                            <form th:action="@{/logout}" method="get" id="logoutForm">
                                 <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
                                     🚪 ログアウト
                                 </a>

@@ -26,11 +26,13 @@
             <h1>ログイン</h1>
             <p class="auth-subtitle">アカウントにサインインしてください</p>
 
-            <div th:if="${param.error}" class="error-message" style="color: red; margin-bottom: 15px; text-align: center;">
-                メールアドレスまたはパスワードが間違っています。
+            <div th:if="${error}" class="error-message" style="color: red; margin-bottom: 15px; text-align: center;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span th:text="${error}">エラーが発生しました</span>
             </div>
 
             <div th:if="${param.success}" class="success-message" style="color: green; margin-bottom: 15px; text-align: center;">
+                <i class="fas fa-check-circle"></i>
                 登録が完了しました。ログインしてください。
             </div>
 
