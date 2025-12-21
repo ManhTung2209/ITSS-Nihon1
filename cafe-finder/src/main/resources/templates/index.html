@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>コーヒーファインダー - ホーム</title>
 
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <script th:src="@{/js/main.js}" defer></script>
 </head>
@@ -26,12 +26,12 @@
                 </li>
 
                 <!-- User dropdown (show when logged in) -->
-                <li class="dropdown" th:if="${isLoggedIn}">
+                <li class="dropdown" sec:authorize="isAuthenticated()">
                     <a href="#" class="dropdown-toggle">
-                        <span th:text="${userName}">User</span> ▾
+                        Xin chào <span sec:authentication="principal.fullName">User</span> ▾
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a th:href="@{/settings}">👤 アカウント</a></li> 
+                        <li><a th:href="@{/update}">👤 アカウント</a></li> 
                         
                         <li>
                             <form th:action="@{/logout}" method="post" id="logoutForm">
@@ -52,7 +52,7 @@
             <p>近くの最高のコーヒーショップを探索</p>
 
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="カフェ名、評価、距離で検索...">
+                <input type="text" id="searchInput" placeholder="カフェ名、評価、距離で検索..." />
                 <button onclick="searchCoffeeShops()">🔍 検索</button>
             </div>
 

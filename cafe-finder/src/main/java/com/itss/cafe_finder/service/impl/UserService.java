@@ -66,16 +66,25 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         String roleName = "ROLE_" + user.getRoleType().name().toUpperCase();
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority(roleName))
-        );
+        return new CustomUserDetails(user, roleName);
     }
 
+    public static class CustomUserDetails extends org.springframework.security.core.userdetails.User {
+        private final String name;
+        private final Long id;
 
+        public CustomUserDetails(User user, String roleName) {
+            super(user.getEmail(), user.getPassword(), Collections.singletonList(new SimpleGrantedAuthority(roleName)));
+            this.name = user.getName();
+            this.id = user.getId();
+        }
 
+        public String getFullName() {
+            return name;
+        }
 
-
-
+        public Long getId() {
+            return id;
+        }
+    }
 }

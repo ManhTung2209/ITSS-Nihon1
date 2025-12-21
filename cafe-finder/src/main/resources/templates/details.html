@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>カフェ詳細 - コーヒーファインダー</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
+<script th:src="@{/js/detail.js}" defer></script>
 
 <body style="
     font-family:'Noto Sans JP', sans-serif;
@@ -208,7 +211,7 @@
         <!-- CREATE REVIEW -->
         <h3 style="font-size:24px; margin-bottom:16px;">レビューを書く</h3>
 
-        <div th:if="!${isLoggedIn}" 
+        <div sec:authorize="!isAuthenticated()"
             style="
                 background:#fff3cd;
                 padding:16px;
@@ -222,7 +225,7 @@
             <a href="/login" style="color:#0066cc; text-decoration:underline; margin-left:8px;">ログインページへ</a>
         </div>
 
-        <form th:if="${isLoggedIn}" th:action="@{/cafes/{id}/reviews(id=${cafe.id})}" method="post"
+        <form sec:authorize="isAuthenticated()" th:action="@{/cafes/{id}/reviews(id=${cafe.id})}" method="post"
             style="
                 background:white;
                 padding:22px;
@@ -243,7 +246,7 @@
             ">
                 <p style="margin:0; font-size:14px; color:#555;">
                     <strong>投稿者:</strong> 
-                    <span th:text="${userName}" style="color:#3498db; font-weight:bold;">User</span>
+                    <span sec:authentication="principal.fullName" style="color:#3498db; font-weight:bold;">User</span>
                 </p>
             </div>
 
