@@ -19,7 +19,12 @@
                 <a th:href="@{/}">☕ コーヒーファインダー</a>
             </div>
             <ul class="nav-menu">
-                <li><a th:href="@{/}">ホーム</a></li>
+                <li><a th:href="@{/}" class="active">ホーム</a></li>
+                <li><a th:href="@{/map}">地図</a></li>
+
+                <li sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/admin}" style="color: #d35400; font-weight: bold;">🔧 管理 (Admin)</a>
+                </li>
 
                 <li sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}">ログイン</a> 

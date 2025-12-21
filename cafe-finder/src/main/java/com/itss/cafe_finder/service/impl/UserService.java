@@ -65,11 +65,10 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        String roleName = "ROLE_" + user.getRoleType().name().toUpperCase();
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority(roleName))
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRoleType().name().toUpperCase()))
         );
     }
 
