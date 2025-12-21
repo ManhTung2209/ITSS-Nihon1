@@ -66,8 +66,7 @@ function displayShops(list, elementId) {
                     <i class="fas fa-map-marker-alt"></i> ${shop.distance ? shop.distance.toFixed(1) + ' km' : 'N/A'}
                 </p>
                 <p class="shop-description">${description}</p>
-                <a href="shop-details.html?id=${shop.id ?? 0}" class="details-button">Chi tiết</a>
-            </div>
+                <a href="/cafes/${shop.id}" class="details-button">Chi tiết</a>        
         `;
 
         container.appendChild(div);

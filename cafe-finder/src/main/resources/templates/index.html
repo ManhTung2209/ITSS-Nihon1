@@ -30,9 +30,10 @@
                     <a th:href="@{/login}">ログイン</a> 
                 </li>
 
-                <li class="dropdown" sec:authorize="isAuthenticated()">
+                <!-- User dropdown (show when logged in) -->
+                <li class="dropdown" th:if="${isLoggedIn}">
                     <a href="#" class="dropdown-toggle">
-                        <span sec:authentication="name">User</span> ▾
+                        <span th:text="${userName}">User</span> ▾
                     </a>
                     <ul class="dropdown-menu">
                         <li><a th:href="@{/settings}">👤 アカウント</a></li> 
