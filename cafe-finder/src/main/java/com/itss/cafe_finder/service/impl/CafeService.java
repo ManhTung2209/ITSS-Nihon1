@@ -1,4 +1,4 @@
-package com.itss.cafe_finder.service;
+package com.itss.cafe_finder.service.impl;
 
 import com.itss.cafe_finder.model.Cafe;
 import com.itss.cafe_finder.repository.CafeRepository;

@@ -1,6 +1,6 @@
 package com.itss.cafe_finder.controller;
 
-import com.itss.cafe_finder.service.CafeService;
+import com.itss.cafe_finder.service.impl.CafeService;
 import dto.CafeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,4 +34,6 @@ public class CafeController {
                 sortDirection
         );
     }
+
+
 }

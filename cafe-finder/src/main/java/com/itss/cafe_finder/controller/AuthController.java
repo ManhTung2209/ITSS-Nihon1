@@ -1,8 +1,9 @@
 package com.itss.cafe_finder.controller;
 
-import com.itss.cafe_finder.model.User;
-import com.itss.cafe_finder.service.UserService;
 import com.itss.cafe_finder.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -10,11 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import jakarta.servlet.http.HttpSession;
+import com.itss.cafe_finder.model.User;
+import com.itss.cafe_finder.service.impl.UserService;
+
+import dto.request.UserUpdateRequest;
 
 @Controller
 public class AuthController {
@@ -108,11 +111,16 @@ public class AuthController {
             return "register";
         }
     }
-    
-    // Xử lý logout
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/";
+
+    @GetMapping("/update")
+    public String showUpdateForm(Model model) {
+        model.addAttribute("userUpdateRequest", new UserUpdateRequest());
+        return "update"; // Trả về file update.html trong templates
+    }
+
+    @PutMapping("/update")
+    public String updateUser(@ModelAttribute("userUpdateRequest")UserUpdateRequest userUpdateRequest){
+        this.userService.updateUser(userUpdateRequest);
+        return "redirect:/login";
     }
 }

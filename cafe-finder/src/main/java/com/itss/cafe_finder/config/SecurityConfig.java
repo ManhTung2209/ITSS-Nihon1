@@ -19,7 +19,7 @@ public class SecurityConfig {
                 // Cho phép truy cập công khai các trang static, api tìm kiếm, và trang chủ
                 .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/api/cafes/**", "/register", "/login", "/admin/js/**", "/admin/css/**", "/admin/images/**", "/admin/**", "/admin", "/cafes/**").permitAll()
                 // Các request khác yêu cầu đăng nhập
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .formLogin(form -> form.disable()) // Disable Spring Security form login - sử dụng custom login
             .csrf(csrf -> csrf.disable()) // Disable CSRF cho đơn giản
