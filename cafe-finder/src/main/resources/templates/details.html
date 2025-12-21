@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カフェ詳細 - コーヒーファインダー</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body style="
+    font-family:'Noto Sans JP', sans-serif;
+    background:#f2f2f2;
+    margin:0;
+    padding:20px 0;
+">
+
+    <div style="
+        max-width:1100px;
+        background:white;
+        margin:0 auto;
+        padding:40px;
+        border-radius:14px;
+        box-shadow:0 4px 16px rgba(0,0,0,0.08);
+    ">
+
+        <!-- Header -->
+        <h2 th:text='${cafe.name}'
+            style="margin:0 0 28px; font-size:32px; font-weight:600;">
+            カフェ名
+        </h2>
+
+        <!-- Cafe Info -->
+        <div style="display:flex; gap:32px; align-items:flex-start;">
+
+            <img th:src="${cafe.image}" th:alt="${cafe.name}"
+                style="
+                    width:260px;
+                    height:260px;
+                    object-fit:cover;
+                    border-radius:12px;
+                    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+                "/>
+
+            <div style="font-size:17px; line-height:1.6;">
+                <p><i class="fas fa-map-marker-alt" style="color:#c0392b; margin-right:8px;"></i>
+                    <span th:text="${cafe.address}">住所</span>
+                </p>
+
+                <p><i class="fas fa-star" style="color:#f1c40f; margin-right:8px;"></i>
+                   <span th:text="${cafe.rating}">0</span> / 5
+                </p>
+
+                <p>距離: <span th:text="${cafe.distance}">0</span> km</p>
+
+                <p>
+                    ステータス:
+                    <span th:text="${cafe.status == 'opening' ? '営業中' : (cafe.status == 'closed' ? '閉店' : '不明')}"></span>
+                </p>
+
+                <p th:text="${cafe.description}"
+                    style="margin-top:14px;">
+                    説明
+                </p>
+            </div>
+        </div>
+
+        <hr style="margin:32px 0;">
+
+        <!-- Menu Section -->
+        <h3 style="font-size:26px; margin-bottom:20px;">メニュー</h3>
+
+        <!-- MENU GRID -->
+        <div style="
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap:28px;
+        ">
+
+            <!-- MENU ITEM -->
+            <div th:each="dish : ${dishes}"
+                style="
+                    background:white;
+                    padding:18px;
+                    border-radius:14px;
+                    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                    display:flex;
+                    flex-direction:row;
+                    gap:16px;
+                    min-height:150px;
+                    transition:0.2s ease;
+                "
+                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.12)'"
+                onmouseout="this.style.transform=''; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'"
+            >
+                
+                <!-- IMAGE -->
+                <img th:src="${dish.image}" th:alt="${dish.name}"
+                    style="
+                        width:85px;
+                        height:85px;
+                        border-radius:12px;
+                        object-fit:cover;
+                        flex-shrink:0;
+                    " />
+
+                <!-- TEXT -->
+                <div style="flex:1; display:flex; flex-direction:column;">
+                    <div style="margin-bottom:6px;">
+                        <strong th:text="${dish.name}"
+                            style="font-size:16px; display:block; margin-bottom:4px;">
+                            メニュー名
+                        </strong>
+
+                        <span th:text="${dish.price}"
+                            style="font-size:15px; color:#555;">
+                        </span>円
+                    </div>
+
+                    <p th:text="${dish.description}"
+                        style="
+                            margin:4px 0 0;
+                            font-size:14px;
+                            color:#666;
+                            line-height:1.5;
+                        ">
+                        説明
+                    </p>
+                </div>
+            </div>
+
+            <p th:if="${#lists.isEmpty(dishes)}"
+                style="grid-column:1 / span 3; text-align:center; margin-top:10px; color:gray;">
+                メニュー情報がありません。
+            </p>
+        </div>
+
+
+        <!-- Back button -->
+        <div style="text-align:right; margin-top:32px;">
+            <a th:href="@{/}"
+                style="
+                    padding:10px 18px;
+                    background:#ddd;
+                    border-radius:6px;
+                    text-decoration:none;
+                    color:#333;
+                    font-size:15px;
+                "
+                onmouseover="this.style.background='#ccc';"
+                onmouseout="this.style.background='#ddd';">
+                ← 戻る
+            </a>
+        </div>
+        
+        <hr style="margin:40px 0;">
+
+        <!-- REVIEW TITLE -->
+        <h3 style="font-size:26px; margin-bottom:20px;">レビュー</h3>
+
+        <!-- LIST OF REVIEWS -->
+        <div style="display:flex; flex-direction:column; gap:20px;">
+
+            <!-- ONE REVIEW -->
+            <div th:each="review : ${reviews}"
+                style="
+                    background:#fafafa;
+                    padding:20px;
+                    border-radius:12px;
+                    box-shadow:0 2px 6px rgba(0,0,0,0.06);
+                ">
+                
+                <div style="display:flex; justify-content:space-between;">
+                    <!-- USERNAME -->
+                    <strong style="font-size:17px; color:#333;"
+                            th:text="${review.userName}">
+                        ユーザー名
+                    </strong>
+
+                    <!-- STARS -->
+                    <span style="color:#f1c40f; font-size:18px;">
+                        ★ <span th:text="${review.star}">5</span> / 5
+                    </span>
+                </div>
+
+                <!-- CONTENT -->
+                <p th:text="${review.content}"
+                    style="margin-top:12px; font-size:15px; color:#555; line-height:1.6;">
+                    コメント
+                </p>
+
+                <!-- DATE -->
+                <p th:text="${#temporals.format(review.createdAt, 'yyyy/MM/dd HH:mm')}"
+                style="margin-top:8px; font-size:13px; color:#888;">
+                    投稿日時
+                </p>
+            </div>
+
+            <!-- NO REVIEW -->
+            <p th:if="${#lists.isEmpty(reviews)}"
+                style="text-align:center; color:gray; font-style:italic;">
+                レビューはまだありません。
+            </p>
+
+        </div>
+
+        <hr style="margin:40px 0;">
+
+        <!-- CREATE REVIEW -->
+        <h3 style="font-size:24px; margin-bottom:16px;">レビューを書く</h3>
+
+        <div th:if="!${isLoggedIn}" 
+            style="
+                background:#fff3cd;
+                padding:16px;
+                border-radius:8px;
+                color:#856404;
+                margin-bottom:20px;
+                border:1px solid #ffeaa7;
+            ">
+            <i class="fas fa-info-circle" style="margin-right:8px;"></i>
+            レビューを書くにはログインしてください。
+            <a href="/login" style="color:#0066cc; text-decoration:underline; margin-left:8px;">ログインページへ</a>
+        </div>
+
+        <form th:if="${isLoggedIn}" th:action="@{/cafes/{id}/reviews(id=${cafe.id})}" method="post"
+            style="
+                background:white;
+                padding:22px;
+                border-radius:12px;
+                box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                display:flex;
+                flex-direction:column;
+                gap:18px;
+            ">
+
+            <!-- USER INFO -->
+            <div style="
+                background:#e8f4f8;
+                padding:12px;
+                border-radius:8px;
+                border-left:4px solid #3498db;
+                margin-bottom:8px;
+            ">
+                <p style="margin:0; font-size:14px; color:#555;">
+                    <strong>投稿者:</strong> 
+                    <span th:text="${userName}" style="color:#3498db; font-weight:bold;">User</span>
+                </p>
+            </div>
+
+            <!-- RATING -->
+            <div>
+                <label style="font-size:15px; font-weight:bold;">評価 (1〜5)</label>
+                <select name="star" required
+                    style="
+                        width:120px; padding:10px;
+                        border-radius:6px; border:1px solid #ccc;
+                        margin-top:6px; font-size:15px;
+                    ">
+                    <option value="">選択してください</option>
+                    <option value="5">★★★★★ (5)</option>
+                    <option value="4">★★★★☆ (4)</option>
+                    <option value="3">★★★☆☆ (3)</option>
+                    <option value="2">★★☆☆☆ (2)</option>
+                    <option value="1">★☆☆☆☆ (1)</option>
+                </select>
+            </div>
+
+            <!-- COMMENT -->
+            <div>
+                <label style="font-size:15px; font-weight:bold;">コメント</label>
+                <textarea name="content" rows="4" required
+                    style="
+                        width:100%; padding:10px;
+                        border-radius:6px; border:1px solid #ccc;
+                        margin-top:6px; font-size:15px;
+                        resize:vertical;
+                    "></textarea>
+            </div>
+
+            <!-- SUBMIT -->
+            <button type="submit"
+                style="
+                    width:160px;
+                    padding:12px;
+                    background:#3498db;
+                    color:white;
+                    border:none;
+                    border-radius:8px;
+                    font-size:16px;
+                    cursor:pointer;
+                    align-self:flex-end;
+                "
+                onmouseover="this.style.background='#2980b9'"
+                onmouseout="this.style.background='#3498db'">
+                投稿する
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+</html>

@@ -210,6 +210,7 @@ async function viewCafeDetail(id) {
                             <h4>${dish.name || ''}</h4>
                             <p class="menu-item-price">¥${dish.price || 0}</p>
                             ${dish.description ? `<p class="menu-item-description">${dish.description}</p>` : ''}
+                            <button class="btn-icon" onclick="openEditDishModal(${dish.id})" title="メニューを編集"><i class="fas fa-edit"></i></button>
                         </div>
                     </div>
                 `;
@@ -463,3 +464,100 @@ window.onclick = function(event) {
         }
     });
 }
+
+// Open edit dish modal
+async function openEditDishModal(dishId) {
+    try {
+        const response = await fetch(`${API_BASE}/dishes/${dishId}`);
+        const dish = await response.json();
+
+        // Populate the dish edit modal with the dish details
+        document.getElementById('editDishId').value = dish.id;
+        document.getElementById('editDishName').value = dish.name || '';
+        document.getElementById('editDishPrice').value = dish.price || '';
+        document.getElementById('editDishDescription').value = dish.description || '';
+        document.getElementById('editDishImage').value = dish.image || '';
+
+        // Show the dish edit modal
+        document.getElementById('editDishModal').classList.add('show');
+    } catch (error) {
+        console.error('Error loading dish details:', error);
+        showNotification('メニュー情報の読み込みに失敗しました', 'error');
+    }
+}
+
+// Save edited dish
+async function saveEditedDish() {
+    const dishId = document.getElementById('editDishId').value;
+    const dishData = {
+        name: document.getElementById('editDishName').value,
+        price: parseFloat(document.getElementById('editDishPrice').value) || 0,
+        description: document.getElementById('editDishDescription').value,
+        image: document.getElementById('editDishImage').value
+    };
+
+    try {
+        const response = await fetch(`${API_BASE}/dishes/${dishId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dishData)
+        });
+
+        if (response.ok) {
+            showNotification('メニューを更新しました', 'success');
+            closeEditDishModal();
+            // Reload cafe details to reflect the changes
+            const cafeId = document.querySelector('#cafeDetailModal .cafe-detail').dataset.cafeId;
+            viewCafeDetail(cafeId);
+        } else {
+            showNotification('メニューの更新に失敗しました', 'error');
+        }
+    } catch (error) {
+        console.error('Error saving dish:', error);
+        showNotification('メニューの更新に失敗しました', 'error');
+    }
+}
+
+// Close edit dish modal
+function closeEditDishModal() {
+    document.getElementById('editDishModal').classList.remove('show');
+}
+
+// Create edit dish modal (hidden by default)
+document.body.insertAdjacentHTML('beforeend', `
+    <div class="modal" id="editDishModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>メニュー編集</h2>
+                <span class="modal-close" onclick="closeEditDishModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editDishId">
+                <label for="editDishName">メニュー名:</label>
+                <input type="text" id="editDishName"><br>
+
+                <label for="editDishPrice">価格:</label>
+                <input type="text" id="editDishPrice"><br>
+
+                <label for="editDishDescription">説明:</label>
+                <textarea id="editDishDescription"></textarea><br>
+
+                <label for="editDishImage">画像 URL:</label>
+                <input type="text" id="editDishImage"><br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-primary" onclick="saveEditedDish()">保存</button>
+                <button type="button" class="btn-secondary" onclick="closeEditDishModal()">キャンセル</button>
+            </div>
+        </div>
+    </div>
+`);
+
+// Listen for clicks outside the modal to close it
+window.addEventListener('click', function(event) {
+    if (event.target == document.getElementById('editDishModal')) {
+        closeEditDishModal();
+    }
+});

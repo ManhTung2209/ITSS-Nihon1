@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class AdminCafeService {
 
     @Autowired
@@ -103,6 +105,19 @@ public class AdminCafeService {
         return false;
     }
 
+    public DishDTO updateDish(Long id, DishDTO dto) {
+        Dish dish = dishRepository.findById(id).orElse(null);
+        if (dish != null) {
+            if (dto.getName() != null) dish.setName(dto.getName());
+            if (dto.getPrice() != null) dish.setPrice(dto.getPrice());
+            if (dto.getDescription() != null) dish.setDescription(dto.getDescription());
+            if (dto.getImage() != null) dish.setImage(dto.getImage());
+            dish.setUpdatedOn(ZonedDateTime.now());
+            return toDishDTO(dishRepository.save(dish));
+        }
+        return null;
+    }
+
     private void saveDishes(Cafe cafe, List<DishDTO> dishesDto) {
         if (dishesDto == null || dishesDto.isEmpty()) {
             return;
@@ -163,4 +178,3 @@ public class AdminCafeService {
         return dto;
     }
 }
-

@@ -14,4 +14,3 @@ public class CafeDTO {
     private String description;
     private String status;
 }
-

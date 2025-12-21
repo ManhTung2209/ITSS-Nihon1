@@ -17,17 +17,17 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((requests) -> requests
                 // Cho phép truy cập công khai các trang static, api tìm kiếm, và trang chủ
-                .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/api/cafes/**", "/register", "/login").permitAll()
+                .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/api/cafes/**", "/register", "/login", "/admin/js/**", "/admin/css/**", "/admin/images/**", "/admin/**", "/admin", "/cafes/**").permitAll()
                 // Các request khác yêu cầu đăng nhập
                 .anyRequest().permitAll()
             )
-            .formLogin((form) -> form
-                .loginPage("/login") // Đường dẫn đến trang login tùy chỉnh
-                .usernameParameter("email") // Dùng email thay vì username
-                .defaultSuccessUrl("/") // Đăng nhập thành công thì về trang chủ
+            .formLogin(form -> form.disable()) // Disable Spring Security form login - sử dụng custom login
+            .csrf(csrf -> csrf.disable()) // Disable CSRF cho đơn giản
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
                 .permitAll()
-            )
-            .logout((logout) -> logout.permitAll());
+            );
 
         return http.build();
     }
