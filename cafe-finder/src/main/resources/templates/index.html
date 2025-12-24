@@ -19,7 +19,12 @@
                 <a th:href="@{/}">☕ コーヒーファインダー</a>
             </div>
             <ul class="nav-menu">
-                <li><a th:href="@{/}">ホーム</a></li>
+                <li><a th:href="@{/}" class="active">ホーム</a></li>
+                <li><a th:href="@{/map}">地図</a></li>    
+                
+                <li sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/admin}" style="color: #d35400; font-weight: bold;">🔧 管理 (Admin)</a>
+                </li>
 
                 <li sec:authorize="!isAuthenticated()">
                     <a th:href="@{/login}">ログイン</a> 
@@ -28,7 +33,7 @@
                 <!-- User dropdown (show when logged in) -->
                 <li class="dropdown" sec:authorize="isAuthenticated()">
                     <a href="#" class="dropdown-toggle">
-                        Xin chào <span sec:authentication="principal.fullName">User</span> ▾
+                        <span sec:authentication="name">User</span> ▾
                     </a>
                     <ul class="dropdown-menu">
                         <li><a th:href="@{/update}">👤 アカウント</a></li> 
