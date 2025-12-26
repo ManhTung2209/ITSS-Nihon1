@@ -4,9 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-
     <title>コーヒーファインダー - ホーム</title>
 
     <link rel="stylesheet" th:href="@{/css/styles.css}" />
@@ -39,6 +36,7 @@
             max-width: 500px;
             width: 90%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
 
         .popup-header {
@@ -148,7 +146,13 @@
             padding-left: 24px;
         }
 
-        .loading, .no-results {
+        .loading {
+            padding: 16px;
+            text-align: center;
+            color: #999;
+        }
+
+        .no-results {
             padding: 16px;
             text-align: center;
             color: #999;
@@ -207,17 +211,13 @@
             background: #888;
             border-radius: 4px;
         }
+
+        .suggestions-dropdown::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
     </style>
 
     <script th:src="@{/js/main.js}" defer></script>
-    <script th:inline="javascript">
-    /*<![CDATA[*/
-    var showLocationPopup = /*[[${showLocationPopup}]]*/ false;
-    if (showLocationPopup) {
-        sessionStorage.setItem('justLoggedIn', 'true');
-    }
-    /*]]>*/
-    </script>
 </head>
 
 <body>
@@ -244,6 +244,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a th:href="@{/update}">👤 アカウント</a></li> 
+                        
                         <li>
                             <form th:action="@{/logout}" method="post" id="logoutForm">
                                 <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
@@ -320,11 +321,13 @@
                         type="text" 
                         class="search-input-location" 
                         id="locationInput"
-                        placeholder="Ví dụ: Hoàn Kiếm, Cầu Giấy, Ba Đình..."
+                        placeholder="東京"
                         autocomplete="off"
                     />
                 </div>
-                <div class="suggestions-dropdown" id="suggestionsDropdown"></div>
+                <div class="suggestions-dropdown" id="suggestionsDropdown">
+                    <!-- Suggestions will be inserted here -->
+                </div>
             </div>
 
             <div class="button-container">
@@ -346,79 +349,35 @@
         const confirmBtn = document.getElementById('confirmBtn');
         const locationOverlay = document.getElementById('locationOverlay');
 
+        // Check if user has location saved, if not show popup on login
         document.addEventListener("DOMContentLoaded", () => {
             displayFeaturedShops();
             displayNearbyShops();
             
+            // Check if user is authenticated and doesn't have location
+            const isAuthenticated = document.querySelector('[sec\\:authorize="isAuthenticated()"]') !== null;
+            const hasLocation = localStorage.getItem('userLocation');
             const justLoggedIn = sessionStorage.getItem('justLoggedIn');
             
-            if (justLoggedIn === 'true') {
-                setTimeout(() => {
-                    showLocationPopup();
-                }, 500);
+            // Show popup if user just logged in and doesn't have location
+            if (justLoggedIn === 'true' && !hasLocation) {
+                showLocationPopup();
                 sessionStorage.removeItem('justLoggedIn');
             }
         });
 
+        // Show location popup
         function showLocationPopup() {
             locationOverlay.classList.add('active');
-            setTimeout(() => locationInput.focus(), 100);
+            locationInput.focus();
         }
 
+        // Close location popup
         function closeLocationPopup() {
             locationOverlay.classList.remove('active');
-            selectedLocation = null;
-            locationInput.value = '';
-            confirmBtn.disabled = true;
-            hideSuggestions();
         }
 
-        // Event listener cho input location
-        locationInput.addEventListener('input', (e) => {
-            const query = e.target.value.trim();
-            
-            // Reset selected location khi user thay đổi input
-            if (selectedLocation && query !== selectedLocation.name) {
-                selectedLocation = null;
-                confirmBtn.disabled = true;
-            }
-            
-            // Debounce để tránh gọi API quá nhiều
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                searchLocations(query);
-            }, 300);
-        });
-
-        // Keyboard navigation
-        locationInput.addEventListener('keydown', (e) => {
-            const items = suggestionsDropdown.querySelectorAll('.suggestion-item');
-            
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                highlightedIndex = Math.min(highlightedIndex + 1, items.length - 1);
-                updateHighlight();
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                highlightedIndex = Math.max(highlightedIndex - 1, -1);
-                updateHighlight();
-            } else if (e.key === 'Enter') {
-                e.preventDefault();
-                if (highlightedIndex >= 0 && highlightedIndex < currentSuggestions.length) {
-                    selectLocation(highlightedIndex);
-                }
-            } else if (e.key === 'Escape') {
-                hideSuggestions();
-            }
-        });
-
-        // Đóng suggestions khi click bên ngoài
-        document.addEventListener('click', (e) => {
-            if (!locationInput.contains(e.target) && !suggestionsDropdown.contains(e.target)) {
-                hideSuggestions();
-            }
-        });
-
+        // Search locations using Nominatim API
         async function searchLocations(query) {
             if (query.length < 2) {
                 hideSuggestions();
@@ -429,84 +388,66 @@
 
             try {
                 const response = await fetch(
-                    `https://nominatim.openstreetmap.org/search?` +
-                    `format=json` +
-                    `&q=${encodeURIComponent(query + ', Hà Nội, Việt Nam')}` +
-                    `&limit=10` +
-                    `&accept-language=vi` +
-                    `&addressdetails=1`
+                    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&accept-language=ja&countrycodes=jp`
                 );
-
                 const data = await response.json();
 
-                // Lọc chỉ những địa điểm ở Hà Nội
-                currentSuggestions = data
-                    .filter(item => {
-                        const addr = item.address;
-                        return (
-                            addr && (
-                                addr.city === "Hà Nội" || 
-                                addr.city === "Hanoi" ||
-                                addr.state === "Hà Nội" ||
-                                addr.state === "Hanoi" ||
-                                item.display_name.includes("Hà Nội") ||
-                                item.display_name.includes("Hanoi")
-                            )
-                        );
-                    })
-                    .slice(0, 5)
-                    .map(item => {
-                        // Tạo tên hiển thị ngắn gọn hơn
-                        let name = item.address.road || item.address.suburb || item.address.quarter || item.display_name.split(',')[0];
-                        let address = item.display_name;
-                        
-                        return {
-                            name: name,
-                            address: address,
-                            lat: parseFloat(item.lat),
-                            lng: parseFloat(item.lon)
-                        };
-                    });
+                currentSuggestions = data.map(item => ({
+                    name: item.name || item.display_name.split(',')[0],
+                    address: item.display_name,
+                    lat: parseFloat(item.lat),
+                    lon: parseFloat(item.lon)
+                }));
 
                 displaySuggestions(currentSuggestions);
-
             } catch (error) {
-                console.error('Error searching locations:', error);
+                console.error('Error fetching locations:', error);
                 showNoResults();
             }
         }
 
+        // Display suggestions
         function displaySuggestions(suggestions) {
             highlightedIndex = -1;
+            
             if (suggestions.length === 0) {
                 showNoResults();
                 return;
             }
+
             let html = '';
-            suggestions.forEach((s, i) => {
-                html += `<div class="suggestion-item" onclick="selectLocation(${i})">
-                    <div class="suggestion-name">${s.name}</div>
-                    <div class="suggestion-address">${s.address}</div>
-                </div>`;
+            suggestions.forEach((suggestion, index) => {
+                html += `
+                    <div class="suggestion-item" data-index="${index}" onclick="selectLocation(${index})">
+                        <div class="suggestion-name">${suggestion.name}</div>
+                        <div class="suggestion-address">${suggestion.address}</div>
+                    </div>
+                `;
             });
+
             suggestionsDropdown.innerHTML = html;
             suggestionsDropdown.style.display = 'block';
         }
 
+        // Show loading state
         function showLoading() {
             suggestionsDropdown.innerHTML = '<div class="loading">検索中...</div>';
             suggestionsDropdown.style.display = 'block';
         }
 
+        // Show no results
         function showNoResults() {
             suggestionsDropdown.innerHTML = '<div class="no-results">結果が見つかりませんでした</div>';
             suggestionsDropdown.style.display = 'block';
         }
 
+        // Hide suggestions
         function hideSuggestions() {
             suggestionsDropdown.style.display = 'none';
+            suggestionsDropdown.innerHTML = '';
         }
 
+        // Select location
         function selectLocation(index) {
             selectedLocation = currentSuggestions[index];
             locationInput.value = selectedLocation.name;
@@ -514,10 +455,36 @@
             hideSuggestions();
         }
 
+        // Confirm location
+        function confirmLocation() {
+            if (selectedLocation) {
+                // Save location to localStorage
+                localStorage.setItem('userLocation', JSON.stringify({
+                    name: selectedLocation.name,
+                    address: selectedLocation.address,
+                    lat: selectedLocation.lat,
+                    lon: selectedLocation.lon,
+                    timestamp: new Date().toISOString()
+                }));
+                
+                console.log('Selected location:', selectedLocation);
+                
+                // Close popup
+                closeLocationPopup();
+                
+                // Reload nearby shops with new location
+                displayNearbyShops();
+                
+                // Show success message
+                alert(`位置情報が設定されました: ${selectedLocation.name}`);
+            }
+        }
+
+        // Keyboard navigation
         function updateHighlight() {
             const items = suggestionsDropdown.querySelectorAll('.suggestion-item');
-            items.forEach((item, i) => {
-                if (i === highlightedIndex) {
+            items.forEach((item, index) => {
+                if (index === highlightedIndex) {
                     item.classList.add('highlighted');
                     item.scrollIntoView({ block: 'nearest' });
                 } else {
@@ -526,61 +493,56 @@
             });
         }
 
-        function confirmLocation() {
-            if (!selectedLocation) return;
-
-            // Lấy CSRF token từ meta
-            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
-            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
-            fetch('/user/location', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    [csrfHeader]: csrfToken
-                },
-                body: JSON.stringify({
-                    lat: selectedLocation.lat,
-                    lng: selectedLocation.lng,
-                    address: selectedLocation.address
-                })
-            })
-            .then(res => {
-                if (!res.ok) throw new Error("Save failed");
-                return res.json();
-            })
-            .then(() => {
-                closeLocationPopup();
-                alert("📍 Vị trí đã được lưu!");
-                displayNearbyShops();
-            })
-            .catch(err => {
-                console.error(err);
-                alert("❌ Không thể lưu vị trí");
-            });
-        }
-
-
-        // Filter functions
-        function searchCoffeeShops() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const ratingFilter = document.getElementById('filterRating').value;
-            const distanceFilter = document.getElementById('filterDistance').value;
+        // Event listeners
+        locationInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
             
-            displayNearbyShops(1, searchTerm, ratingFilter, distanceFilter);
-        }
+            selectedLocation = null;
+            confirmBtn.disabled = true;
+            highlightedIndex = -1;
 
-        document.getElementById('filterRating')?.addEventListener('change', () => {
-            searchCoffeeShops();
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                searchLocations(query);
+            }, 300);
         });
 
-        document.getElementById('filterDistance')?.addEventListener('change', () => {
-            searchCoffeeShops();
+        locationInput.addEventListener('keydown', (e) => {
+            const items = suggestionsDropdown.querySelectorAll('.suggestion-item');
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (highlightedIndex < items.length - 1) {
+                    highlightedIndex++;
+                    updateHighlight();
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (highlightedIndex > 0) {
+                    highlightedIndex--;
+                    updateHighlight();
+                }
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (highlightedIndex >= 0 && highlightedIndex < currentSuggestions.length) {
+                    selectLocation(highlightedIndex);
+                }
+            } else if (e.key === 'Escape') {
+                hideSuggestions();
+            }
         });
 
-        document.getElementById('searchInput')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                searchCoffeeShops();
+        // Close suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                hideSuggestions();
+            }
+        });
+
+        // Close popup when clicking overlay
+        locationOverlay.addEventListener('click', (e) => {
+            if (e.target === locationOverlay) {
+                closeLocationPopup();
             }
         });
     </script>

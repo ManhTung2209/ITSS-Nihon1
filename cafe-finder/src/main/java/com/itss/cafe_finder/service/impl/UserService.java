@@ -41,6 +41,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    // Cập nhật thông tin user (name, dob)
     @Transactional
     public User updateUser(UserUpdateRequest req) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -48,12 +49,29 @@ public class UserService implements UserDetailsService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        //Only name and dob can be updated
+
         user.setName(req.getName());
         user.setDob(req.getDob());
         user.setUpdatedOn(ZonedDateTime.now());
+
         System.out.println("Updating user: " + user);
         return userRepository.save(user);
+    }
+
+    // Cập nhật tọa độ người dùng
+    @Transactional
+    public void updateLocation(Double lat, Double lng, String address) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setLat(lat);
+        user.setLng(lng);
+        user.setUpdatedOn(ZonedDateTime.now());
+
+        userRepository.save(user);
     }
 
 
@@ -66,6 +84,7 @@ public class UserService implements UserDetailsService {
         return new CustomUserDetails(user, "ROLE_" + user.getRoleType().name().toUpperCase());
     }
 
+    // Custom UserDetails
     public static class CustomUserDetails extends org.springframework.security.core.userdetails.User {
         private final String name;
         private final Long id;

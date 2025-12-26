@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itss.cafe_finder.model.User;
 import com.itss.cafe_finder.repository.UserRepository;
@@ -61,8 +62,16 @@ public class AuthController {
     }
 
     @PutMapping("/update")
-    public String updateUser(@ModelAttribute("userUpdateRequest")UserUpdateRequest userUpdateRequest){
+    public String updateUser(@ModelAttribute("userUpdateRequest") UserUpdateRequest userUpdateRequest) {
         this.userService.updateUser(userUpdateRequest);
         return "redirect:/login";
+    }
+    
+    // Thêm endpoint để xử lý sau khi đăng nhập thành công
+    @GetMapping("/login-success")
+    public String loginSuccess(RedirectAttributes redirectAttributes) {
+        // Thêm flash attribute để hiển thị location popup
+        redirectAttributes.addFlashAttribute("justLoggedIn", true);
+        return "redirect:/";
     }
 }

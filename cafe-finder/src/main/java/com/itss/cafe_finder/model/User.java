@@ -43,8 +43,17 @@ public class User {
     @Column(name = "status", insertable = false, updatable = false)
     private UserStatusType status;
 
+    private Double lat;
+    private Double lng;
+
     private LocalDate dob;
 
     @Column(name = "updated_on", insertable = false, updatable = false)
     private ZonedDateTime updatedOn;
+
+    public Double getLat() { return lat; }
+    public void setLat(Double lat) { this.lat = lat; }
+
+    public Double getLng() { return lng; }
+    public void setLng(Double lng) { this.lng = lng; }
 }

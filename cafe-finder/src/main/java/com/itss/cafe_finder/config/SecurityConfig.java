@@ -17,7 +17,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**",  "/register", "/login").permitAll()
+                .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/register", "/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/cafes/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .usernameParameter("email")
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl("/?justLoggedIn=true", true)  // ← THAY ĐỔI Ở ĐÂY
                 .failureUrl("/login?error=true")
                 .permitAll()
             )
