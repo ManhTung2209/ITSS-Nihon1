@@ -2,6 +2,8 @@ package com.itss.cafe_finder.service.impl;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -59,18 +61,41 @@ public class UserService implements UserDetailsService {
 
     // Cập nhật tọa độ người dùng
     @Transactional
-    public void updateLocation(Double lat, Double lng, String address) {
+    public void updateLocation(Double lat, Double lng) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getName() == null) {
+            throw new RuntimeException("Authentication failed. Please log in again.");
+        }
+
+        String email = auth.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        try {
+            user.setLat(lat);
+            user.setLng(lng);
+            user.setUpdatedOn(ZonedDateTime.now());
+
+            userRepository.save(user);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update user location: " + e.getMessage(), e);
+        }
+    }
+
+    // Lấy tọa độ hiện tại của người dùng
+    @Transactional(readOnly = true)
+    public Map<String, Double> getCurrentLocation() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setLat(lat);
-        user.setLng(lng);
-        user.setUpdatedOn(ZonedDateTime.now());
-
-        userRepository.save(user);
+        Map<String, Double> location = new HashMap<>();
+        location.put("lat", user.getLat());
+        location.put("lng", user.getLng());
+        return location;
     }
 
 

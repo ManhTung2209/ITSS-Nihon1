@@ -1,15 +1,21 @@
 package com.itss.cafe_finder.service.impl;
 
-import com.itss.cafe_finder.model.Cafe;
-import com.itss.cafe_finder.repository.CafeRepository;
-import dto.CafeDTO;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.Optional;
+import com.itss.cafe_finder.model.Cafe;
+import com.itss.cafe_finder.repository.CafeRepository;
+
+import dto.CafeDTO;
 
 @Service
 public class CafeService {
@@ -82,6 +88,11 @@ public class CafeService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Cafe> cafes = cafeRepository.findAll(pageable);
         return ResponseEntity.ok(cafes.map(this::toDTO));
+    }
+
+    public List<CafeDTO> getAllCafes() {
+        List<Cafe> cafes = cafeRepository.findAll();
+        return cafes.stream().map(this::toDTO).toList();
     }
 
     private CafeDTO toDTO(Cafe c) {

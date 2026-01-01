@@ -19,6 +19,7 @@ public class SecurityConfig {
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/register", "/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/cafes/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/user/location/update").authenticated()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
@@ -39,6 +40,9 @@ public class SecurityConfig {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
+            )
+            .csrf((csrf) -> csrf
+                .ignoringRequestMatchers("/user/location/update")
             );
 
         return http.build();
