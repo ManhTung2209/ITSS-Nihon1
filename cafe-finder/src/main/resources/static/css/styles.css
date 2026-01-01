@@ -297,11 +297,11 @@ a:hover {
 }
 
 .status-open {
-    background-color: #4CAF50;
+    background-color: #4CAF50 !important;
 }
 
 .status-closed {
-    background-color: #E53935;
+    background-color: #E53935 !important;
 }
 
 .shop-info {
@@ -1103,15 +1103,6 @@ a:hover {
 .rating {
     color:#f1c40f;
     font-weight:600;
-}
-
-.status-badge {
-    display:inline-block;
-    margin:10px 0;
-    padding:4px 12px;
-    background:#eafaf1;
-    color:#27ae60;
-    border-radius:20px;
 }
 
 .cafe-description {
