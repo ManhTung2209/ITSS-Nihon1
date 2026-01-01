@@ -23,12 +23,6 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
-    
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public String login() {
@@ -47,7 +41,6 @@ public class AuthController {
             userService.registerUser(user);            
             return "redirect:/login?success";
         } catch (Exception e) {
-            // Nếu có lỗi (ví dụ: Email đã tồn tại), hiển thị lại form đăng ký kèm thông báo lỗi
             model.addAttribute("error", e.getMessage());
             return "register";
         }
@@ -58,7 +51,7 @@ public class AuthController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("userUpdateRequest", new UserUpdateRequest());
         model.addAttribute("email", auth.getName());
-        return "update"; // Trả về file update.html trong templates
+        return "update";
     }
 
     @PutMapping("/update")

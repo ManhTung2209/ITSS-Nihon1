@@ -297,11 +297,11 @@ a:hover {
 }
 
 .status-open {
-    background-color: #4CAF50;
+    background-color: #4CAF50 !important;
 }
 
 .status-closed {
-    background-color: #E53935;
+    background-color: #E53935 !important;
 }
 
 .shop-info {
@@ -1060,4 +1060,90 @@ a:hover {
         transform: translateX(400px);
         opacity: 0;
     }
+}
+
+.page-bg {
+    background:#f2f2f2;
+    font-family:'Noto Sans JP', sans-serif;
+}
+
+.detail-card {
+    max-width:1100px;
+    margin:40px auto;
+    background:white;
+    padding:40px;
+    border-radius:16px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.08);
+}
+
+.cafe-info {
+    display:flex;
+    gap:40px;
+}
+
+.cafe-image {
+    width:240px;
+    height:240px;
+    object-fit:cover;
+    border-radius:16px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.15);
+}
+
+.cafe-meta {
+    font-size:16px;
+}
+
+.info-line {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+}
+
+.rating {
+    color:#f1c40f;
+    font-weight:600;
+}
+
+.cafe-description {
+    margin-top:14px;
+    padding:14px;
+    background:#f8f9fa;
+    border-left:4px solid #c0392b;
+    border-radius:6px;
+}
+
+.menu-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;
+}
+
+.menu-card {
+    display:flex;
+    gap:14px;
+    padding:16px;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+.menu-card img {
+    width:80px;
+    height:80px;
+    border-radius:10px;
+    object-fit:cover;
+}
+
+.review-card {
+    background:#fafafa;
+    padding:20px;
+    border-radius:12px;
+    margin-top:16px;
+}
+
+.empty-text {
+    grid-column:1 / -1;
+    text-align:center;
+    color:gray;
 }

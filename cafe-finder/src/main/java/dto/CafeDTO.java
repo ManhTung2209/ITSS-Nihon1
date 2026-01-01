@@ -14,4 +14,5 @@ public class CafeDTO {
     private String image;
     private String description;
     private String status;
+    private Double distance;
 }
