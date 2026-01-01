@@ -4,21 +4,22 @@ let currentPage = 0;
 const ITEMS_PER_PAGE = 6;
 let totalPages = 0;
 
-// Lấy query parameters từ URL
+
 function getSearchParamsFromURL() {
     const params = new URLSearchParams(window.location.search);
     return {
         keyword: params.get('keyword') || '',
         minRating: params.get('minRating') || '',
+        maxDistance: params.get('maxDistance') || '',
         page: parseInt(params.get('page')) || 0
     };
 }
 
-// Cập nhật URL với search parameters
-function updateURLWithParams(keyword, minRating, page) {
+function updateURLWithParams(keyword, minRating, maxDistance, page) {
     const params = new URLSearchParams();
     if (keyword) params.set('keyword', keyword);
     if (minRating) params.set('minRating', minRating);
+    if (maxDistance) params.set('maxDistance', maxDistance);
     if (page > 0) params.set('page', page);
     
     const newURL = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
@@ -48,13 +49,20 @@ function displayShops(list, elementId) {
         const ratingStars = '⭐'.repeat(Math.floor(shop.rating || 0));
 
         const imageFile = shop.image ? shop.image : 'placeholder.png';
-        
-        const imgSrc = `${BACKEND_URL}/images/${imageFile}`.replace(/([^:]\/)\/+/g, "$1"); 
+        const imgSrc = `${BACKEND_URL}/images/${imageFile}`.replace(/([^:]\/)\/+/g, "$1");
 
         const description = shop.description ?? "快適な空間";
+        
         const statusClass = shop.status === 'opening'
             ? 'status-open'
             : 'status-closed';
+
+        let locationDisplay = "";
+        if (shop.distance != null) {
+            locationDisplay = `<span> ${shop.distance} km</span>`; 
+        } else {
+            locationDisplay = `<span>${shop.address || ""}</span>`;
+        }
 
         div.innerHTML = `
             <div class="shop-image-container">
@@ -69,10 +77,12 @@ function displayShops(list, elementId) {
                 <p class="shop-rating">
                     ${ratingStars} <span>(${shop.rating ?? "N/A"})</span>
                 </p>
+                
                 <p class="shop-distance">
                     <i class="fas fa-map-marker-alt"></i>
-                    ${(shop.lat && shop.lng) ? shop.lat + ', ' + shop.lng : 'N/A'}
+                    ${locationDisplay}
                 </p>
+
                 <p class="shop-description">${description}</p>
             </div>
         `;
@@ -92,7 +102,6 @@ function displayPagination(currentPage, totalPages) {
     const pagination = document.createElement('div');
     pagination.className = 'pagination';
 
-    // Previous button
     if (currentPage > 0) {
         const prevBtn = document.createElement('button');
         prevBtn.className = 'pagination-btn';
@@ -101,7 +110,6 @@ function displayPagination(currentPage, totalPages) {
         pagination.appendChild(prevBtn);
     }
 
-    // Page numbers
     for (let i = 0; i < totalPages; i++) {
         const pageBtn = document.createElement('button');
         pageBtn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
@@ -110,7 +118,6 @@ function displayPagination(currentPage, totalPages) {
         pagination.appendChild(pageBtn);
     }
 
-    // Next button
     if (currentPage < totalPages - 1) {
         const nextBtn = document.createElement('button');
         nextBtn.className = 'pagination-btn';
@@ -122,9 +129,15 @@ function displayPagination(currentPage, totalPages) {
     paginationContainer.appendChild(pagination);
 }
 
+
 async function goToPage(page) {
     currentPage = page;
-    updateURLWithParams(currentSearchParams.keyword, currentSearchParams.minRating, page);
+    updateURLWithParams(
+        currentSearchParams.keyword, 
+        currentSearchParams.minRating, 
+        currentSearchParams.maxDistance, 
+        page
+    );
     try {
         const results = await fetchShops(currentSearchParams, page, ITEMS_PER_PAGE);
         displayShops(results, "nearbyShops");
@@ -143,6 +156,8 @@ function updateSearchResults(results, totalResults) {
 
     if (featuredSection) featuredSection.style.display = 'none';
 
+    if (nearbySection) nearbySection.style.display = 'block';
+
     if (nearbyTitle) nearbyTitle.innerHTML = '🔍 検索結果';
 
     currentPage = 0;
@@ -151,27 +166,13 @@ function updateSearchResults(results, totalResults) {
     displayPagination(currentPage, totalPages);
 }
 
-function resetUI() {
-    const featuredSection = document.querySelector('.featured-section');
-    const nearbySection = document.querySelector('.nearby-section');
-    const nearbyTitle = nearbySection ? nearbySection.querySelector('h2') : null;
-
-    if (featuredSection) featuredSection.style.display = 'block';
-
-    if (nearbyTitle) nearbyTitle.innerHTML = '📍 近くのカフェ';
-
-    // Clear URL parameters
-    window.history.replaceState({}, '', window.location.pathname);
-    
-    displayFeaturedShops();
-    displayNearbyShops();
-}
-
 async function fetchShops(params, page, size) {
     let queryString = `page=${page}&size=${size}`;
 
     if (params.keyword) queryString += `&keyword=${encodeURIComponent(params.keyword)}`;
     if (params.minRating) queryString += `&minRating=${params.minRating}`;
+    
+    if (params.maxDistance) queryString += `&maxDistance=${params.maxDistance}`;
 
     if (params.sortBy) queryString += `&sortBy=${params.sortBy}`;
     if (params.sortDirection) queryString += `&sortDirection=${params.sortDirection}`;
@@ -191,6 +192,8 @@ async function fetchShopsWithPagination(params, page, size) {
 
     if (params.keyword) queryString += `&keyword=${encodeURIComponent(params.keyword)}`;
     if (params.minRating) queryString += `&minRating=${params.minRating}`;
+    
+    if (params.maxDistance) queryString += `&maxDistance=${params.maxDistance}`;
 
     if (params.sortBy) queryString += `&sortBy=${params.sortBy}`;
     if (params.sortDirection) queryString += `&sortDirection=${params.sortDirection}`;
@@ -232,16 +235,19 @@ async function searchCoffeeShops() {
     const keyword = document.getElementById("searchInput").value.trim();
     const minRating = document.getElementById("filterRating").value;
 
+    const distanceElement = document.getElementById("filterDistance");
+    const maxDistance = distanceElement ? distanceElement.value : "";
+
     const params = {
         keyword: keyword,
-        minRating: minRating
+        minRating: minRating,
+        maxDistance: maxDistance
     };
     
     currentSearchParams = params;
     currentPage = 0;
 
-    // Update URL with search parameters
-    updateURLWithParams(keyword, minRating, 0);
+    updateURLWithParams(keyword, minRating, maxDistance, 0);
 
     try {
         const { content, totalElements } = await fetchShopsWithPagination(params, 0, ITEMS_PER_PAGE);
@@ -253,45 +259,54 @@ async function searchCoffeeShops() {
     }
 }
 
-function handleLogout() {
-    alert("ログアウトしました。");
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
-    // Kiểm tra xem có URL parameters hay không
+    const isUserLoggedIn = !!document.getElementById("filterDistance");
+
     const urlParams = getSearchParamsFromURL();
-    const hasSearchParams = urlParams.keyword || urlParams.minRating;
+    const hasSearchParams = urlParams.keyword || urlParams.minRating || urlParams.maxDistance;
 
     if (hasSearchParams) {
-        // Nếu có search params, hiển thị kết quả tìm kiếm
         currentSearchParams = {
             keyword: urlParams.keyword,
-            minRating: urlParams.minRating
+            minRating: urlParams.minRating,
+            maxDistance: urlParams.maxDistance
         };
         currentPage = urlParams.page;
 
-        // Cập nhật form với giá trị cũ
-        document.getElementById("searchInput").value = urlParams.keyword;
-        document.getElementById("filterRating").value = urlParams.minRating;
+        const searchInput = document.getElementById("searchInput");
+        if(searchInput) searchInput.value = urlParams.keyword;
+        
+        const filterRating = document.getElementById("filterRating");
+        if(filterRating) filterRating.value = urlParams.minRating;
+
+        const filterDistance = document.getElementById("filterDistance");
+        if(filterDistance && urlParams.maxDistance) {
+            filterDistance.value = urlParams.maxDistance;
+        }
 
         try {
             const { content, totalElements } = await fetchShopsWithPagination(currentSearchParams, currentPage, ITEMS_PER_PAGE);
             updateSearchResults(content, totalElements);
-            // Hiển thị trang đã saved
-            displayPagination(currentPage, totalPages);
         } catch (error) {
             console.error("Error loading search results:", error);
             displayFeaturedShops();
-            displayNearbyShops();
+            if (isUserLoggedIn) displayNearbyShops();
         }
-    } else {
-        // Không có search params, hiển thị trang chủ
+    } 
+    else {
         displayFeaturedShops();
-        displayNearbyShops();
+        
+        if (isUserLoggedIn) {
+            displayNearbyShops();
+        } else {
+            const nearbySection = document.querySelector('.nearby-section');
+            if (nearbySection) {
+                nearbySection.style.display = 'none';
+            }
+        }
     }
 
     const searchInput = document.getElementById("searchInput");
-    const filterRating = document.getElementById("filterRating");
 
     searchInput?.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -300,7 +315,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    filterRating?.addEventListener('change', function() {
-        searchCoffeeShops();
-    });
 });

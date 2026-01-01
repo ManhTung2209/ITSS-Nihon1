@@ -274,6 +274,13 @@
                     <option value="4">⭐⭐⭐⭐ 4つ星以上</option>
                     <option value="3">⭐⭐⭐ 3つ星以上</option>
                 </select>
+
+                <select id="filterDistance" sec:authorize="isAuthenticated()">
+                    <option value="">距離でフィルター</option>
+                    <option value="1">1km以内</option>
+                    <option value="3">3km以内</option>
+                    <option value="5">5km以内</option>
+                </select>
             </div>
         </div>
     </header>
