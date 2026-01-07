@@ -64,7 +64,7 @@ public class AuthController {
     @GetMapping("/login-success")
     public String loginSuccess(RedirectAttributes redirectAttributes) {
         // Thêm flash attribute để hiển thị location popup
-        redirectAttributes.addFlashAttribute("justLoggedIn", true);
+        redirectAttributes.addFlashAttribute("showLocationPopup", true);
         return "redirect:/";
     }
 }

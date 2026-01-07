@@ -35,7 +35,8 @@
         .location-popup {
             background: white;
             border-radius: 16px;
-            padding: 32px;
+            padding: 20px;
+            max-height: 700px;
             max-width: 800px;
             width: 90%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -47,28 +48,28 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .popup-header .icon {
-            font-size: 28px;
+            font-size: 24px;
         }
 
         .popup-header h2 {
-            font-size: 24px;
+            font-size: 20px;
             color: #333;
             font-weight: 600;
         }
 
         .popup-description {
             color: #666;
-            margin-bottom: 24px;
-            font-size: 14px;
+            margin-bottom: 10px;
+            font-size: 13px;
         }
 
         .search-container {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .search-input-wrapper {
@@ -86,10 +87,10 @@
 
         .search-input-location {
             width: 100%;
-            padding: 14px 16px 14px 48px;
+            padding: 10px 16px 10px 48px;
             border: 2px solid #ddd;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
             outline: none;
             transition: border-color 0.3s;
         }
@@ -159,15 +160,15 @@
         .button-container {
             display: flex;
             gap: 12px;
-            margin-top: 24px;
+            margin-top: 10px;
         }
 
         .btn-popup {
             flex: 1;
-            padding: 14px 24px;
+            padding: 10px 24px;
             border: none;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -208,6 +209,52 @@
         .suggestions-dropdown::-webkit-scrollbar-thumb {
             background: #888;
             border-radius: 4px;
+        }
+
+        .current-location-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .current-location-label {
+            font-weight: bold;
+            color: #8b6f47;
+            white-space: nowrap;
+        }
+
+        .current-location-text {
+            color: #333;
+            font-weight: 500;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .current-location-section {
+            background: #fdfaf6;
+            border: 1px solid #e9e0d5;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .current-location-section h2 {
+            font-size: 18px;
+            margin: 0;
+            color: #8b6f47;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
     </style>
 
@@ -299,8 +346,10 @@
             <div id="paginationContainer" class="pagination-container"></div>
         </section>
 
-        <section class="current-location-section">
+        <section class="current-location-section" sec:authorize="isAuthenticated()">
             <h2>📌 あなたの現在地</h2>
+            <span id="mainPageLocationText" class="current-location-text">場所を読み込み中...</span>
+            <button class="btn-popup" onclick="showLocationPopup()" style="flex: 0 0 auto; background: #8b6f47; color: white; padding: 8px 16px; font-size: 13px;">変更</button>
         </section>
     </main>
 
@@ -319,6 +368,11 @@
             </div>
             <p class="popup-description">あなたの現在地を入力して、近くのカフェを見つけましょう</p>
 
+            <div class="current-location-box">
+                <span class="current-location-label">現在地:</span>
+                <span id="currentLocationText" class="current-location-text">未設定</span>
+            </div>
+
             <div class="search-container">
                 <div class="search-input-wrapper">
                     <span class="search-icon">📍</span>
@@ -326,27 +380,23 @@
                         type="text" 
                         class="search-input-location" 
                         id="locationInput"
-                        placeholder="Ví dụ: Hoàn Kiếm, Cầu Giấy, Ba Đình..."
+                        placeholder="例: Hoan Kiem, Cau Giay, Ba Dinh..."
                         autocomplete="off"
                     />
                 </div>
                 <div class="suggestions-dropdown" id="suggestionsDropdown"></div>
-                
-                <!-- Added current location message -->
-                <p id="currentLocationMessage" style="margin-top: 10px; color: #666; font-size: 14px;">現在地: 場所が選択されていません</p>
             </div>
 
-            <div style="margin-bottom: 10px;">
+            <div style="margin-bottom: 5px;">
                 <button type="button" id="btnSelectOnMap" class="btn-popup" style="background: #2563eb; color: white; padding: 10px; font-size: 14px; width: auto; flex: none;">
                     📍 地図で位置を選択
                 </button>
             </div>
 
             <!-- Map container for visual selection -->
-            <div id="popupMap" style="height: 400px; width: 100%; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ddd;"></div>
+            <div id="popupMap" style="height: 500px; width: 100%; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ddd;"></div>
 
             <div class="button-container">
-                <button class="btn-popup btn-popup-cancel" onclick="closeLocationPopup()">キャンセル</button>
                 <button class="btn-popup btn-popup-confirm" id="confirmBtn" onclick="confirmLocation()" disabled>確認</button>
             </div>
         </div>
@@ -374,18 +424,51 @@
         const suggestionsDropdown = document.getElementById('suggestionsDropdown');
         const confirmBtn = document.getElementById('confirmBtn');
         const locationOverlay = document.getElementById('locationOverlay');
+        const currentLocationText = document.getElementById('currentLocationText');
 
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Load main content
             displayFeaturedShops();
             displayNearbyShops();
-            
-            const justLoggedIn = sessionStorage.getItem('justLoggedIn');
-            
-            if (justLoggedIn === 'true') {
-                setTimeout(() => {
-                    showLocationPopup();
-                }, 500);
-                sessionStorage.removeItem('justLoggedIn');
+
+            // Check if user is logged in (by checking for an element that only logged-in users see)
+            const isLoggedIn = document.querySelector('a[href*="update"]') !== null;
+
+            if (isLoggedIn) {
+                // Handle popup display after login
+                const justLoggedIn = sessionStorage.getItem('justLoggedIn');
+                if (justLoggedIn === 'true') {
+                    setTimeout(() => {
+                        showLocationPopup();
+                    }, 500);
+                    sessionStorage.removeItem('justLoggedIn');
+                }
+
+                // Fetch and display current user location
+                try {
+                    const response = await fetch('/user/location/current', {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    if (!response.ok) throw new Error('Failed to fetch location');
+
+                    const data = await response.json();
+
+                    if (data.lat && data.lng) {
+                        window.currentUserLocation = { lat: data.lat, lng: data.lng };
+                        const locationName = await fetchLocationName(data.lat, data.lng);
+                        updateCurrentLocationDisplay(locationName);
+                    } else {
+                        updateCurrentLocationDisplay("未設定");
+                    }
+                } catch (error) {
+                    console.error('Error fetching user location:', error);
+                    updateCurrentLocationDisplay("未設定");
+                }
+            } else {
+                // Hide location-specific sections if not logged in
+                const locationSection = document.querySelector('.current-location-section');
+                if (locationSection) locationSection.style.display = 'none';
             }
         });
 
@@ -401,7 +484,6 @@
             locationOverlay.classList.remove('active');
             selectedLocation = null;
             locationInput.value = '';
-            confirmBtn.disabled = true;
             hideSuggestions();
         }
 
@@ -444,7 +526,7 @@
                             address: displayName
                         };
                         locationInput.value = displayName;
-                        confirmBtn.disabled = false;
+                        updateCurrentLocationDisplay(displayName);
                     } catch (error) {
                         console.error("Reverse geocode failed", error);
                     }
@@ -487,13 +569,7 @@
         locationInput.addEventListener('input', (e) => {
             const query = e.target.value.trim();
             
-            // Reset selected location khi user thay đổi input
-            if (selectedLocation && query !== selectedLocation.name) {
-                selectedLocation = null;
-                confirmBtn.disabled = true;
-            }
-            
-            // Debounce để tránh gọi API quá nhiều
+            // API呼び出しの過多を防ぐためのデバウンス
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 searchLocations(query);
@@ -522,7 +598,7 @@
             }
         });
 
-        // Đóng suggestions khi click bên ngoài
+        // 外部クリック時にサジェストを閉じる
         document.addEventListener('click', (e) => {
             if (!locationInput.contains(e.target) && !suggestionsDropdown.contains(e.target)) {
                 hideSuggestions();
@@ -543,13 +619,13 @@
                     `format=json` +
                     `&q=${encodeURIComponent(query + ', Hà Nội, Việt Nam')}` +
                     `&limit=10` +
-                    `&accept-language=vi` +
+                    `&accept-language=ja` +
                     `&addressdetails=1`
                 );
 
                 const data = await response.json();
 
-                // Lọc chỉ những địa điểm ở Hà Nội
+                // ハノイの場所のみをフィルタリング
                 currentSuggestions = data
                     .filter(item => {
                         const addr = item.address;
@@ -566,7 +642,7 @@
                     })
                     .slice(0, 5)
                     .map(item => {
-                        // Tạo tên hiển thị ngắn gọn hơn
+                        // 表示名を短く生成
                         let name = item.address.road || item.address.suburb || item.address.quarter || item.display_name.split(',')[0];
                         let address = item.display_name;
                         
@@ -620,7 +696,7 @@
         function selectLocation(index) {
             selectedLocation = currentSuggestions[index];
             locationInput.value = selectedLocation.name;
-            confirmBtn.disabled = false;
+            updateCurrentLocationDisplay(selectedLocation.name);
             updatePopupMarker(selectedLocation.lat, selectedLocation.lng);
             hideSuggestions();
         }
@@ -637,10 +713,33 @@
             });
         }
 
-        function confirmLocation() {
-            if (!selectedLocation) return;
+        function updateCurrentLocationDisplay(text) {
+            const isSet = text && text !== '未設定' && text !== '不明な場所';
 
-            // Lấy CSRF token từ meta
+            // Update popup text
+            if (currentLocationText) {
+                currentLocationText.textContent = text;
+            }
+            
+            // Update main page text
+            const mainPageLocationText = document.getElementById('mainPageLocationText');
+            if (mainPageLocationText) {
+                mainPageLocationText.textContent = text;
+            }
+
+            // Enable/disable confirm button in popup
+            if (confirmBtn) {
+                confirmBtn.disabled = !isSet;
+            }
+        }
+
+        function confirmLocation() {
+            if (!selectedLocation) {
+                closeLocationPopup();
+                return;
+            }
+
+            // メタタグからCSRFトークンを取得
             const csrfToken = document.querySelector('meta[name="_csrf"]').content;
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
@@ -662,50 +761,14 @@
             })
             .then(() => {
                 closeLocationPopup();
-                alert("📍 Vị trí đã được lưu!");
+                alert("📍 位置情報が保存されました！");
                 displayNearbyShops();
             })
             .catch(err => {
                 console.error(err);
-                alert("❌ Không thể lưu vị trí");
+                alert("❌ 位置情報を保存できませんでした");
             });
         }
-
-        document.addEventListener("DOMContentLoaded", async () => {
-            try {
-                const response = await fetch('/user/location/current', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if (!response.ok) throw new Error('Failed to fetch location');
-
-                const data = await response.json();
-                const currentLocationMessage = document.getElementById('currentLocationMessage');
-
-                if (data.lat && data.lng) {
-                    window.currentUserLocation = { lat: data.lat, lng: data.lng };
-
-                    // Update map immediately if initialized
-                    if (popupMap) {
-                        if (popupMarker) {
-                            popupMarker.setLatLng([data.lat, data.lng]);
-                        } else {
-                            popupMarker = L.marker([data.lat, data.lng], {icon: blueIcon}).addTo(popupMap);
-                        }
-                        popupMap.setView([data.lat, data.lng], 15);
-                    }
-
-                    const locationName = await fetchLocationName(data.lat, data.lng);
-                    currentLocationMessage.textContent = `現在地: ${locationName}`;
-                } else {
-                    currentLocationMessage.textContent = "現在地: 場所が選択されていません";
-                }
-            } catch (error) {
-                console.error('Error fetching user location:', error);
-            }
-        });
 
         async function fetchLocationName(lat, lng) {
             try {
