@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8">
-  <title>Cafe Finder Hanoi</title>
+  <title>コーヒーファインダー・ハノイ</title>
 
   <link rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -218,7 +218,7 @@
 
   <div class="main-container">
     <div id="sidebar">
-      <div class="app-title">☕ Cafe Finder Hanoi</div>
+      <div class="app-title">☕ コーヒーファインダー・ハノイ</div>
 
       <!-- Nút Home -->
       <div class="controls">
@@ -235,7 +235,7 @@
         <button class="mode-btn" data-mode="cycling">🚴</button>
       </div>
 
-      <div class="section-title">Danh sách quán cafe</div>
+      <div class="section-title">カフェ一覧</div>
       <div id="cafeList"></div>
     </div>
 
@@ -345,7 +345,7 @@
       }
     }
 
-    // Fetch user location from API
+    // APIからユーザーの位置情報を取得
     async function fetchUserLocation() {
       const response = await fetch('/user/location/current');
       const data = await response.json();
@@ -357,7 +357,7 @@
       }
     }
 
-    // Update user location to API
+    // ユーザーの位置情報をAPIに更新
     async function updateUserLocation(lat, lng) {
       try {
         console.log('Sending user location update:', { lat, lng }); // Log data being sent
@@ -396,26 +396,26 @@
     }
 
     function highlightCafe(index) {
-      // 1. Reset tất cả marker về màu xanh
+      // 1. すべてのマーカーを緑色にリセット
       cafeMarkers.forEach(m => {
         m.setIcon(greenIcon);
         m.setZIndexOffset(0);
       });
 
-      // 2. Đổi marker được chọn sang màu đỏ
+      // 2. 選択されたマーカーを赤色に変更
       if (cafeMarkers[index]) {
         cafeMarkers[index].setIcon(redIcon);
         cafeMarkers[index].setZIndexOffset(1000);
       }
 
-      // 3. Reset style của tất cả các thẻ
+      // 3. すべてのカードのスタイルをリセット
       document.querySelectorAll(".cafe-card").forEach(c => {
         c.classList.remove("nearest");
         c.style.borderColor = "#e5e7eb";
         c.style.backgroundColor = "#f9fafb";
       });
 
-      // 4. Highlight thẻ được chọn và cuộn lên đầu
+      // 4. 選択されたカードをハイライトし、先頭にスクロール
       const card = document.getElementById(`cafe-card-${index}`);
       if (card) {
         card.style.borderColor = "red";
@@ -423,7 +423,7 @@
         card.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
-      // 5. Show detail popup
+      // 5. 詳細ポップアップを表示
       if (sortedCafes[index]) {
         showCafeDetailPopup(sortedCafes[index]);
       }

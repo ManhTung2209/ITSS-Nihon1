@@ -26,14 +26,14 @@
         <h1>プロフィール更新</h1>
         <p class="auth-subtitle">アカウント情報を変更する</p>
 
-        <!-- Hiển thị lỗi từ backend -->
+        <!-- バックエンドからのエラーを表示 -->
         <div th:if="${error}" class="error-message" style="color: red; margin-bottom: 15px; text-align: center;">
             <p th:text="${error}"></p>
         </div>
 
-        <!-- Form UPDATE -->
+        <!-- 更新フォーム -->
         <form th:action="@{/update}" th:object="${userUpdateRequest}" method="post">
-            <input type="hidden" name="_method" value="put"/> <!-- Cho phép dùng PUT -->
+            <input type="hidden" name="_method" value="put"/> <!-- PUTメソッドの使用を許可 -->
 
             <div class="form-group">
                 <label for="email">メールアドレス</label>

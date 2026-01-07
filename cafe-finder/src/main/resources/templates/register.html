@@ -78,18 +78,18 @@
             var pass = document.getElementById('password').value;
             var confirm = document.getElementById('confirmPassword').value;
             
-            // Xóa thông báo lỗi cũ (nếu có)
+            // 古いエラーメッセージを削除（ある場合）
             var errorSpan = document.getElementById('confirmPasswordError');
             if(errorSpan) errorSpan.textContent = "";
 
             if (pass !== confirm) {
-                e.preventDefault(); // Chặn gửi form
-                // Hiển thị lỗi (bạn có thể dùng alert hoặc gán text vào thẻ span lỗi)
+                e.preventDefault(); // フォーム送信を阻止
+                // エラーを表示（alertを使用するか、エラースパンにテキストを設定）
                 if(errorSpan) {
-                    errorSpan.textContent = "Mật khẩu xác nhận không khớp!";
+                    errorSpan.textContent = "確認用パスワードが一致しません！";
                     errorSpan.style.color = "red";
                 } else {
-                    alert('Mật khẩu xác nhận không khớp!');
+                    alert('確認用パスワードが一致しません！');
                 }
             }
         });
