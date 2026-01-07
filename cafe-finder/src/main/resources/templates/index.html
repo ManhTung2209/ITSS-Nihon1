@@ -762,7 +762,7 @@
             .then(() => {
                 closeLocationPopup();
                 alert("📍 位置情報が保存されました！");
-                displayNearbyShops();
+                window.location.reload();
             })
             .catch(err => {
                 console.error(err);
